@@ -26,35 +26,33 @@ setting up mbed in your linux platfrom.</p>
   </ul>
 </blockquote>
 
-<p></p><h3 id="makefile"> MakeFile </h3><h3 id="title"></h3><p></p>
+<p></p><h3 id="makefile"> MakeFile </h3> <br>
+<code> <br>
+DIRNAME=$(shell basename $(realpath ./)) <br>
+MAKEFILE_PATH=$(realpath ../../../mbed/workspace_tools/make.py) <br>
+BUILD_DIR=$(realpath ../../build/) <br>
+SOURCE_PATH=$(realpath ./) <br>
+BUILD_PATH=$(BUILD_DIR)/$(DIRNAME) <br>
+MCU=NUCLEO_F091RC <br>
+TOOLCHAIN=GCC_ARM <br>
+MCU_DIR=/run/media/anshuman/NUCLEO/ <br>
+FLAGS=”” <br>
+all: <br>
+    $(MAKEFILE_PATH) --source=$(SOURCE_PATH) –build=$(BUILD_PATH) -m \$(MCU) -t $(TOOLCHAIN) $(FLAGS)</code><p></p>
 
-<blockquote>
-  <p>DIRNAME=<span>$</span>(shell basename <span>$</span>(realpath ./)) <br>
-  MAKEFILE_PATH=<span>$</span>(realpath ../../../mbed/workspace_tools/make.py) <br>
-  BUILD_DIR=<span>$</span>(realpath ../../build/) <br>
-  SOURCE_PATH=<span>$</span>(realpath ./) <br>
-  BUILD_PATH=<span>$</span>(BUILD_DIR)/<span>$</span>(DIRNAME) <br>
-  MCU=NUCLEO_F091RC <br>
-  TOOLCHAIN=GCC_ARM <br>
-  MCU_DIR=/run/media/anshuman/NUCLEO/ <br>
-  FLAGS=”” <br>
-  all: <br>
-      <span>$</span>(MAKEFILE_PATH) –source=<span>$</span>(SOURCE_PATH) –build=<span>$</span>(BUILD_PATH) -m <span>$</span>(MCU) -t <span>$</span>(TOOLCHAIN) <span>$</span>(FLAGS)</p>
-  
-  <p>upload: <br>
-      cp  <span>$</span>(BUILD_PATH)/<span>$</span>(DIRNAME).bin <span>$</span>(MCU_DIR)</p>
-  
-  <p>clean: <br>
-      rm -r <span>$</span>(BUILD_PATH)</p>
-  
-  <p>help: <br>
-     \ $(MAKEFILE_PATH) –help</p>
-</blockquote>
+<p>upload: <br>
+     cp  <script id="MathJax-Element-97" type="math/tex">(BUILD_PATH)/</script>(DIRNAME).bin $(MCU_DIR)</p>
 
-<p></p><h3 id="privatesettingspy"> private_settings.py</h3><p></p>
+<p>clean: <br>
+    rm -r $(BUILD_PATH)</p>
 
-<blockquote>
-  <p>SERVER_ADDRESS = “127.0.0.1” <br>
-  LOCALHOST = “127.0.0.1” <br>
-  GCC_ARM_PATH =’Your Arm gcc path’</p>
-</blockquote>
+<p>help: <br>
+   $(MAKEFILE_PATH) –help <br>
+</p>
+
+<p></p><h3 id="privatesettingspy"> private_settings.py</h3> <br>
+<code> <br>
+SERVER_ADDRESS = "127.0.0.1" <br>
+LOCALHOST = "127.0.0.1" <br>
+GCC_ARM_PATH ='Your Arm gcc path' <br>
+</code><p></p>
