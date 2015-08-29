@@ -38,11 +38,11 @@ TOOLCHAIN=GCC_ARM <br>
 MCU_DIR=/run/media/anshuman/NUCLEO/ <br>
 FLAGS="" <br>
 all: <br>
-&nbsp;&nbsp;&nbsp;&nbsp;$(MAKEFILE_PATH) --source=$(SOURCE_PATH) --build=$(BUILD_PATH) -m \$(MCU) -t $(TOOLCHAIN) $(FLAGS)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$(MAKEFILE_PATH) --source=$(SOURCE_PATH) --build=$(BUILD_PATH) -m \$(MCU) -t $(TOOLCHAIN) $(FLAGS) <br>
 upload: <br>
-    &nbsp;&nbsp;&nbsp;&nbsp; cp  $(BUILD_PATH)/$(DIRNAME).bin $(MCU_DIR)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp; cp  $(BUILD_PATH)/$(DIRNAME).bin $(MCU_DIR) <br>
 clean: <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;rm -r $(BUILD_PATH)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;rm -r $(BUILD_PATH) <br>
 help: <br>
 &nbsp;&nbsp;&nbsp;&nbsp;   $(MAKEFILE_PATH) --help <br>
 </code><p></p>
