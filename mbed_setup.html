@@ -1,0 +1,55 @@
+<h1 id="setting-up-mbed-in-linux">Setting up Mbed in linux</h1>
+
+<p>Mbed is a sdk that provide a easier interface for programming the arm based microcontroller. It is compatible with most oarm based processor. <br>
+It support rtos, usbasp, dsp etc. Its contains hal and cmisis layer for most of the microcontroller. Mbed is provided online, but if you want to setup mbed in your linux machine no worry , here is a step by step procedure for  <br>
+setting up mbed in your linux platfrom.</p>
+
+<hr>
+
+
+
+<h2 id="steps-for-setup">Steps for Setup</h2>
+
+<p>Here are simple steps for setup</p>
+
+<blockquote>
+  <ul>
+  <li><em>git clone <a href="https://github.com/mbedmicro/mbed.git">https://github.com/mbedmicro/mbed.git</a></em></li>
+  <li><em>cd mbed</em></li>
+  <li><em>sudo python setup.py install</em></li>
+  <li><em>cd workspace_tools</em></li>
+  <li><em>touch private_settings.py</em></li>
+  <li>Copy the contents below to private_settings.py</li>
+  <li><em>python2 build.py -m NUCLEO_F091RC -t GCC_ARM</em></li>
+  <li>Please go through mbed/docs/BUILDING.md for details</li>
+  <li>Use the MakeFile provided below for compiling. Give it the source and build directory for compilation.</li>
+  </ul>
+</blockquote>
+
+<p></p><h3 id="makefile"> MakeFile </h3> <br>
+<code> <br>
+DIRNAME=$(shell basename $(realpath ./)) <br>
+MAKEFILE_PATH=$(realpath ../../../mbed/workspace_tools/make.py) <br>
+BUILD_DIR=$(realpath ../../build/) <br>
+SOURCE_PATH=$(realpath ./) <br>
+BUILD_PATH=$(BUILD_DIR)/$(DIRNAME) <br>
+MCU=NUCLEO_F091RC <br>
+TOOLCHAIN=GCC_ARM <br>
+MCU_DIR=/run/media/anshuman/NUCLEO/ <br>
+FLAGS="" <br>
+all: <br>
+&nbsp;&nbsp;&nbsp;&nbsp;$(MAKEFILE_PATH) --source=$(SOURCE_PATH) --build=$(BUILD_PATH) -m \$(MCU) -t $(TOOLCHAIN) $(FLAGS) <br>
+upload: <br>
+    &nbsp;&nbsp;&nbsp;&nbsp; cp  $(BUILD_PATH)/$(DIRNAME).bin $(MCU_DIR) <br>
+clean: <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;rm -r $(BUILD_PATH) <br>
+help: <br>
+&nbsp;&nbsp;&nbsp;&nbsp;   $(MAKEFILE_PATH) --help <br>
+</code><p></p>
+
+<p></p><h3 id="privatesettingspy"> private_settings.py</h3> <br>
+<code> <br>
+SERVER_ADDRESS = "127.0.0.1" <br>
+LOCALHOST = "127.0.0.1" <br>
+GCC_ARM_PATH ='Your Arm gcc path' <br>
+</code><p></p>
