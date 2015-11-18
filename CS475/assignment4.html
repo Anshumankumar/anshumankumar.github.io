@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>CS 475/675 Assignment 4 (Droids - Animation)</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="Nov 6th, 2015"/>
+<meta name="author" content="Anshuman Kumar, Ravi Chalasani"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">CS 475/675 Assignment 4 (Droids - Animation)</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Making the recording interface and correctly saving the keyframes file </a></li>
+<li><a href="#sec-2">2 Correct interpolation in playback mode </a></li>
+<li><a href="#sec-3">3 Correct use of glfw timers for playback </a></li>
+<li><a href="#sec-4">4 Making the video and uploading to Youtube: 20 marks </a></li>
+<li><a href="#sec-5">5 Bonus: Move camera along a Bezier curve </a></li>
+<li><a href="#sec-6">6 Keyboard Bindings </a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Making the recording interface and correctly saving the keyframes file </h2>
+<div class="outline-text-2" id="text-1">
+
+<p>The state of the robots, lights and camera can be recorded by pressing `F'. The state is appended to `keyframes.yaml' file. yaml format was used mainly because of the readability of the created file, rather than to avoid parsing text. 
+</p></div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Correct interpolation in playback mode </h2>
+<div class="outline-text-2" id="text-2">
+
+<p>`P' is binded to the interpolation and playback function. It reads all the key frames from `keyframes.yaml' interpolates between them and plays them back. For simplicity we have used a constant number of frames between key frames. 
+</p>
+<p>
+Instead of `P', if `R' is used the intermediate frames are copied from the framebuffer and stored to a file. 
+</p></div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Correct use of glfw timers for playback </h2>
+<div class="outline-text-2" id="text-3">
+
+<p>While playing back using `P', glfw timers in particular glfwGetTime is used to pace the frames at the required rate. The core timing code from main.cpp is:
+</p>
+
+
+
+<pre class="src src-c++">frame_start = glfwGetTime();
+
+renderGL();
+env.draw();
+glfwPollEvents();
+
+draw_time = glfwGetTime() - frame_start;
+
+sleep_time_ms = <span style="color: #228b22;">int</span>(1000.0*(frame_time - draw_time));
+<span style="color: #a020f0;">if</span>( sleep_time_ms &gt; 0.0 )
+{
+  <span style="color: #5f9ea0;">std</span>::<span style="color: #5f9ea0;">this_thread</span>::sleep_for(<span style="color: #5f9ea0;">std</span>::<span style="color: #5f9ea0;">chrono</span>::<span style="color: #228b22;">milliseconds</span>(<span style="color: #b8860b;">sleep_time_ms</span>));
+}
+
+<span style="color: #228b22;">glfwSwapBuffers</span>(<span style="color: #b8860b;">window</span>);
+</pre>
+
+
+
+
+<p>
+In short the main thread is made to sleep for any time remaining after rendering a frame and polling for events. 
+</p></div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Making the video and uploading to Youtube: 20 marks </h2>
+<div class="outline-text-2" id="text-4">
+
+<p>In process as the due date for this part is Nov 27th. 
+</p></div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Bonus: Move camera along a Bezier curve </h2>
+<div class="outline-text-2" id="text-5">
+
+
+<div class="figure">
+<p><img src="a4/Bezier-curve-authoring.png"  alt="a4/Bezier-curve-authoring.png" /></p>
+<p>Authoring a Bezier curve</p>
+</div>
+
+<p>
+Functionality to move the camera along a Bezier curve has been implemented. To author a Bezier curve a 3D-cursor in the shape of a camera can be turned on by using the key `*'. This cursor can be moved to any position and orientation using the keybindings for moving an object (`TAB' is used to switch 'active object' status from one object to the next). At any point, the cursor's pose can be recorded using `+' and the last pose can be deleted using `-'. These recorded poses are uses as the coordinates of the control polygon, and corresponding Bezier curve is updated each time `+' or `-' is used. 
+</p>
+<p>
+Points on the curve can be sampled and used to animate the camera position on it. 
+</p></div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Keyboard Bindings </h2>
+<div class="outline-text-2" id="text-6">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption>Keyboard Bindings</caption>
+<colgroup><col align="left" /><col align="left" />
+</colgroup>
+<thead>
+<tr><th scope="col">key</th><th scope="col">binding</th></tr>
+</thead>
+<tbody>
+<tr><td>ESC</td><td>quit application</td></tr>
+<tr><td>tab</td><td>swap controlled active object</td></tr>
+<tr><td>j</td><td>toggle light 1</td></tr>
+<tr><td>k</td><td>toggle light 2</td></tr>
+<tr><td>l</td><td>toggle spot light</td></tr>
+<tr><td>1</td><td>bend forward at hip</td></tr>
+<tr><td>2</td><td>bend backward at hip</td></tr>
+<tr><td>3</td><td>bend left hand forward at elbow</td></tr>
+<tr><td>4</td><td>bend right hand forward at elbow</td></tr>
+<tr><td>3</td><td>r2d2: rotate head left</td></tr>
+<tr><td>4</td><td>r2d2: rotate head right</td></tr>
+<tr><td>5</td><td>bend left hand backward at elbow</td></tr>
+<tr><td>6</td><td>bend right hand backward at elbow</td></tr>
+<tr><td>7</td><td>bend arms backward at shoulder</td></tr>
+<tr><td>8</td><td>bend arms forward at shoulder</td></tr>
+<tr><td>9</td><td>bend arms up at shoulder</td></tr>
+<tr><td>0</td><td>bend arms down at shoulder</td></tr>
+<tr><td>q</td><td>make humanoid robot walk</td></tr>
+<tr><td>arrow keys</td><td>rotate perspective camera</td></tr>
+<tr><td>z, x</td><td>move perspective camera forward/backward</td></tr>
+<tr><td>w, s</td><td>move object along its z-axis</td></tr>
+<tr><td>a, d</td><td>rotate robot about y axis</td></tr>
+<tr><td>v,b,n,m</td><td>move object along its x, y axes</td></tr>
+<tr><td>y,u,i,o</td><td>rotate object around its x, z axes</td></tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div id="postamble">
+<p class="author"> Author: Anshuman Kumar, Ravi Chalasani
+<a href="mailto:anshu266man@gmail.com">&lt;anshu266man@gmail.com&gt;</a>
+</p>
+<p class="date"> Date: Nov 6th, 2015</p>
+</div>
+</div>
+</body>
+</html>
